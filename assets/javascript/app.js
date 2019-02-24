@@ -1,9 +1,14 @@
 // This code will run as soon as the page loads
+ var win = 0;
+  var lose = 0;
+  var unanswer = 3;
 window.onload = function() {
     // $("#lap").on("click", recordLap);
     // $("#stop").on("click", stop);
     // $("#reset").on("click", reset);
     $("#start").on("click", start);
+    $("#questions").hide();
+    $(".result").hide()
   };
   
   //  Variable that will hold our setInterval that runs the stopwatch
@@ -11,16 +16,14 @@ window.onload = function() {
   
   // prevents the clock from being sped up unnecessarily
   var clockRunning = false;
-  var time = 0;
-  var lap = 1;
+  var time = 10;
   
   function reset() {
   
-    time = 0;
-    lap = 1;
+    time = 120;
   
     // DONE: Change the "display" div to "00:00."
-    $("#display").text("00:00");
+    $("#display").text("02:00");
   
     // DONE: Empty the "laps" div.
     $("#laps").text("");
@@ -31,6 +34,10 @@ window.onload = function() {
     if (!clockRunning) {
       intervalId = setInterval(count, 1000);
       clockRunning = true;
+      $("#start").hide();
+      $("#display").show();
+      $("#questions").show();
+      
     }
   }
   function stop() {
@@ -54,15 +61,22 @@ window.onload = function() {
   function count() {
   
     // DONE: increment time by 1, remember we cant use "this" here.
-    time++;
+    time--;
   
     // DONE: Get the current time, pass that into the timeConverter function,
     //       and save the result in a variable.
     var converted = timeConverter(time);
     console.log(converted);
-  
     // DONE: Use the variable we just created to show the converted time in the "display" div.
-    $("#display").text(converted);
+    $("#display").text("Time Remaining " + converted);
+    if(converted === "00:00"){
+      stop();
+      $(".result").show()
+      $("#result").html("You have " + win + " correct answers")
+      $("#result2").html("You have " + lose + " incorrect answers")
+      $("#result3").html("You have " + unanswer + " unanswered")
+      $("#questions").hide();
+    }
   }
   function timeConverter(t) {
   
@@ -82,3 +96,27 @@ window.onload = function() {
   
     return minutes + ":" + seconds;
   }
+  
+ 
+
+  $(".rad").on("click",function(){
+    console.log($(this).val())
+    if($(this).val() === "correct"){
+     win++;
+     unanswer--; 
+    }else if($(this).val() === "loser"){
+      lose++;
+      unanswer--;
+
+    }
+
+  });
+  $("#done").on("click",function(){
+    stop();
+    $(".result").show()
+    $("#result").html("You have " + win + " correct answers")
+    $("#result2").html("You have " + lose + " incorrect answers")
+    $("#result3").html("You have " + unanswer + " unanswered")
+    $("#questions").hide();
+  });
+
